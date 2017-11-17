@@ -118,5 +118,9 @@ venv.bak/
 #other files
 .DS_Store
 
+#dataset
+raw
+data/*
+
 #file for debugging
 debug.ipynb
