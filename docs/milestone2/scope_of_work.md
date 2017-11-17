@@ -9,7 +9,7 @@
 + Yes.
 
 #### 4. Has your team formulated a well-defined question to address in your project, based on the project description and references? If so, please write down the question. If your team hasn’t done this yet, that’s okay!
-+ In this project, we propose to construct a recommender system for restaurants using an ensemble method, which combines the prediction of 3 base estimators, including regression, matrix factorization and collaborative filtering. We would use the [Yelp's academic dataset](https://www.yelp.com/dataset) to train and test our model.
++ In this project, we propose to construct a recommender system for restaurants using an ensemble method, which combines the prediction of 3 base estimators, including regression, collaborative filtering and content filtering. We would use the [Yelp's academic dataset](https://www.yelp.com/dataset) to train and test our model.
 
 #### 5. Briefly describe your team’s plans for work to be completed by Nov 28 (milestone three).
 + Weidong and Jiejun will complete data collection and cleaning by Nov 21.
