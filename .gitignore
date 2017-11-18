@@ -122,6 +122,7 @@ bash.exe.stackdump
 #dataset
 raw
 data/*
+!data/Champaign
 
-#file for debugging
+#files for debugging
 debug.ipynb
