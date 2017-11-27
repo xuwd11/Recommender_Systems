@@ -123,6 +123,7 @@ bash.exe.stackdump
 raw
 data/*
 !data/Champaign
+data/Champaign/results
 
 #files for debugging
 debug.ipynb
