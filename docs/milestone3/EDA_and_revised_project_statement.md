@@ -5,5 +5,7 @@ In this project, we used "review" (shape: 4736897 X 9), "business" (shape: 15663
 
 To wrangle data for EDA and predictive modeling, we first checked and cleaned duplicate reviews (same user reviews same business). We identified 1 case of duplicates involving 2 reviews; we simply dropped one of them since the ratings happen to be the same. Then we dropped barbershops and closed restaurants (~16.4% of rows in "business"), and kept reviews and users associated with remaining restaurants. Finally, we converted "user\_id" and "business\_id" to integers to save space and speed up computations. We checked the number of restaurants in each city (there are 980 cities in the remaining dataset), and sampled a small set by extracting data associated with restaurants in a medium-size city (we chose Champaign, which contains 878 opened restaurants, here) for the debugging of EDA and predictive modeling codes.
 
+To build a recommender system, we can do collaborative filtering or content filtering. To perform collaborative filtering, we only need restaurant ratings from each user, which we can obtain by keeping 3 columns, i.e., "user\_id", "business\_id" and "stars", in "review". Content filtering requires a profile for each user or each restaurants, which characterizes its nature; we can obtain the required data by merging "review" with "user" and "business" through "user\_id" and "business\_id" respectively.
+
 ### Noteworthy findings of the EDA
 ### Revised project statement
