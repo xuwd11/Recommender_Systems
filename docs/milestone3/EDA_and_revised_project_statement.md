@@ -1,0 +1,9 @@
+## EDA and Revised Project Statement
+### Description of the data
+
+In this project, we used "review" (shape: 4736897 X 9), "business" (shape: 156639 X 101)  and "user" (shape: 1183362 X 22) from [Yelp academic dataset](https://www.yelp.com/dataset/challenge). Each row in "review" specifies a review that a user makes on a restaurant (or a barbershop), including date, comment ("text") and rating ("stars"), as well as the number of votes received on this review ("funny", "useful" or "cool"). "Business" contains information on restaurants and barbershops appearing in "review", including typical attributes defining a restaurant (or a barbershop), open hours, geographic information and average ratings. There are a lot of missing values in "business", mostly caused by the missing of attribute descriptions. "User" contains information on users, including profile summaries, social networks on yelp and average ratings. "Review", "business" and "user" are linked together through "user\_id" and "business\_id".
+
+To wrangle data for EDA and predictive modeling, we first checked and cleaned duplicate reviews (same user reviews same business). We identified 1 case of duplicates involving 2 reviews; we simply dropped one of them since the ratings happen to be the same. Then we dropped barbershops and closed restaurants (~16.4% of rows in "business"), and kept reviews and users associated with remaining restaurants. Finally, we converted "user\_id" and "business\_id" to integers to save space and speed up computations. We checked the number of restaurants in each city (there are 980 cities in the remaining dataset), and sampled a small set by extracting data associated with restaurants in a medium-size city (we chose Champaign, which contains 878 opened restaurants, here) for the debugging of EDA and predictive modeling codes.
+
+### Noteworthy findings of the EDA
+### Revised project statement
