@@ -21,14 +21,14 @@ Champaign (20571 reviews) | Fitting time | Training RMSE | Test RMSE
 --- | --- | --- | --- 
 ModeEstimator | | 2.0012 | 2.0176
 BaselineMEAN | 0.017 s | 0.9438 | 1.4829
-BseelineRegression | 0.033 s | 0.8353 | 1.3386
+BaselineRegression | 0.033 s | 0.8353 | 1.3386
 SVD-ALS | 23.38 s | 0.2245 | 1.3269
 
 Full data (4166778 reviews) | Fitting time | Training RMSE | Test RMSE 
 --- | --- | --- | --- 
 ModeEstimator | | 1.8970 | 1.8985
 BaselineMEAN | 3.51 s | 1.0068 | 1.4186
-BseelineRegression | 27.19 s | 0.9198 | 1.2824
+BaselineRegression | 27.19 s | 0.9198 | 1.2824
 SVD-ALS | 67.46 min | 0.1746 | 1.2877
 
 We could round predicted ratings to integers and plot confusion matices for baseline model 2 (regression) and SVD-ALS.
