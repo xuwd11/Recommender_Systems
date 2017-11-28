@@ -1,9 +1,9 @@
 ## EDA and Revised Project Statement
 ### Description of the data
 
-In this project, we use "review" (shape: 4736897 X 9), "business" (shape: 156639 X 101)  and "user" (shape: 1183362 X 22) from [Yelp academic dataset](https://www.yelp.com/dataset/challenge). Each row in "review" specifies a review that a user makes on a restaurant (***or other business premises such as barbershop***), including date, comment ("text") and rating ("stars"), as well as the number of votes ***of different attributes*** received on this review ---("funny", "useful" or "cool")---. "Business" contains information on restaurants and barbershops appearing in "review", including typical attributes defining a restaurant ---(or a barbershop), open hours, geographic information--- and average ratings. There are a lot of missing values in "business", mostly caused by the missing of attribute descriptions  ***and should be dropped***. "User" contains information on users, including profile summaries, social networks on yelp and average ratings. "Review", "business" and "user" are linked together through "user\_id" and "business\_id".
+In this project, we use "review" (shape: 4736897 X 9), "business" (shape: 156639 X 101)  and "user" (shape: 1183362 X 22) from [Yelp academic dataset](https://www.yelp.com/dataset/challenge). Each row in "review" specifies a review that a user makes on a restaurant (or other business premises such as barbershop), including date, comment ("text") and rating ("stars"), as well as the number of votes of different attributes received on this review. "Business" contains information on restaurants and barbershops appearing in "review", including typical attributes defining a restaurant and average ratings. There are a lot of missing values in "business", mostly caused by the missing of attribute descriptions. "User" contains information on users, including profile summaries, social networks on yelp and average ratings. "Review", "business" and "user" are linked together through "user\_id" and "business\_id".
 
-To wrangle data for EDA and predictive modeling, we first checked and cleaned duplicate reviews (an user reviews a business for multiple times). We identified 1 case of duplicates involving 2 reviews; we simply dropped one of them since the ratings happen to be the same. Then we dropped ---barbershops--- ***business places unrelated to restaurants*** and closed restaurants (~16.4% of rows in "business"), and kept reviews and users associated with remaining restaurants. ---Finally, we converted "user\_id" and "business\_id" to integers to save space and speed up computation.--- We checked the number of restaurants in each city (there are 980 cities in the remaining dataset), and sampled a small set by extracting data associated with restaurants in a medium-size city (we chose Champaign, which contains 878 opened restaurants, here) for benchmarking and the debugging of EDA and predictive modeling codes. ***Then we conduct an initial visualization EDA and find that ratings are associated with many of the attributes in "Business", "User" and "Review". This inspires us to propose a content filtering model.***
+To wrangle data for EDA and predictive modeling, we first checked and cleaned duplicate reviews (an user reviews a business for multiple times). We identified 1 case of duplicates involving 2 reviews; we simply dropped one of them since the ratings happen to be the same. Then we dropped business places unrelated to restaurants and closed restaurants (~16.4% of rows in "business"), and kept reviews and users associated with remaining restaurants. We checked the number of restaurants in each city (there are 980 cities in the remaining dataset), and sampled a small set by extracting data associated with restaurants in a medium-size city (we chose Champaign, which contains 878 opened restaurants, here) for benchmarking and the debugging of EDA and predictive modeling codes. We conducted a series of EDA and found that ratings are correlated with many of the attributes in "business", "user" and "review", which inspired us to propose a content filtering model.
 
 To build a recommender system, we can do collaborative filtering or content filtering. To perform collaborative filtering, we only need restaurant ratings from each user, which we can obtain by keeping 3 columns, i.e., "user\_id", "business\_id" and "stars", in "review". Content filtering requires a profile for each user or restaurant, which can characterize its nature; we can obtain the required data by merging "review" with "user" and "business" through "user\_id" and "business\_id" respectively.
 
@@ -17,14 +17,14 @@ It turns out most users rate 5 stars. We thus decided to build a mode estimator,
 
 We fixed the number of iterations to 10 and the number of latent factors to 100, and evaluted each model on the Champaign dataset and full dataset. All experiments are run on a desktop with Inter Xeon CPU 3.10 GHz, 256 GB RAM. We did a half-half training/test split for each dataset. The results are as follows.
 
-Champaign (20571 reviews) | Fitting time | Training RMSE | Test RMSE |
+Champaign (20571 reviews) | Fitting time | Training RMSE | Test RMSE 
 --- | --- | --- | --- 
 ModeEstimator | | 2.0012 | 2.0176
 BaselineMEAN | 0.017 s | 0.9438 | 1.4829
 BseelineRegression | 0.033 s | 0.8353 | 1.3386
 SVD-ALS | 23.38 s | 0.2245 | 1.3269
 
-Full data (4166778 reviews) | Fitting time | Training RMSE | Test RMSE |
+Full data (4166778 reviews) | Fitting time | Training RMSE | Test RMSE 
 --- | --- | --- | --- 
 ModeEstimator | | 1.8970 | 1.8985
 BaselineMEAN | 3.51 s | 1.0068 | 1.4186
@@ -36,9 +36,9 @@ We could round predicted ratings to integers and plot confusion matices for base
 <img src='figs/bm2_cm_alpha1.png' height='150'>
 <img src='figs/als2_cm1.png' height='150'>
 
-Although SVD-ALS significantly improves training performance, there doesn't seem to be significant difference in terms of test performance between 2 models, indicating overfitting occurs and futher tuning of parameters is required for SVD-ALS.
+Although SVD-ALS significantly improves training performance, there doesn't seem to be significant difference in terms of test performance between 2 models, indicating overfitting occurs and futher tuning of parameters is required for SVD-ALS. Also, we notice RMSE of each method is similar for 2 datasets, suggesting it might not be necessary to use such a big dataset for the purpose of benchmarking. Parallel computing could be applied to the implementaiton of SVD-ALS to save computation time since the current CPU usage is mostly under 10% during model fitting.
 
-Also, we notice RMSE of each method is similar for 2 datasets, suggesting it might not be necessary to use such a big dataset for the purpose of benchmarking.
+Besides, we noticed the correlation between ratings and various user/restaurant attributes through a series of EDA, indicating content filtering might further improve the performance.
 
 ### Revised project statement
 
