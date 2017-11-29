@@ -9,7 +9,13 @@ class ModeClassifier:
     def __init__(self, mode=5, classification=None):
         self.mode = mode
         self.fitted = True
+        self.time_fitting = []
         self.classification = classification
+        
+    def fit(self, X, y):
+        t0 = time.time()
+        self.time_fitting.append(time.time() - t0)
+        return self
     
     def predict(self, X, classification=None):
         return self.mode * np.ones(len(X))
