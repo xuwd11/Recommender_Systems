@@ -11,9 +11,11 @@ class ModeClassifier:
         self.fitted = True
         self.time_fitting = []
         self.classification = classification
+        self.train_r2 = None
         
     def fit(self, X, y):
         t0 = time.time()
+        self.train_r2 = self.score(X, y)
         self.time_fitting.append(time.time() - t0)
         return self
     

@@ -45,6 +45,8 @@ def print_results(es, model_name, X_train, y_train, X_test, y_test, \
     print('Fitting time: {} s.'.format(es.time_fitting[-1]))
     print('RMSE on training set: {}.'.format(es.score(X_train, y_train, scoring='rmse')))
     print('RMSE on test set: {}.'.format(es.score(X_test, y_test, scoring='rmse')))
+    print('r2 on training set: {}.'.format(es.score(X_train, y_train)))
+    print('r2 on test set: {}.'.format(es.score(X_test, y_test)))
     if classification:
         print('Classification accuracy on training set: {}.'.format(es.score(X_train, y_train, classification=True)))
         print('Classification accuracy on test set: {}.'.format(es.score(X_test, y_test, classification=True)))

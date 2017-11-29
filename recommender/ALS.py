@@ -16,10 +16,11 @@ from scipy import sparse
 from .Baseline import BaselineMean, BaselineRegression
 
 class ALS1(BaselineRegression):
-	# not updating biases in each iteration
-    def __init__(self, alpha=1, rank=100, iterations=10, init_mean=0, init_std=0.1, \
+    # not updating biases in each iteration
+    def __init__(self, alpha=2, alpha_als=2, rank=100, iterations=10, init_mean=0, init_std=0.1, \
                  random_state=0, classification=False):
         super().__init__(alpha, classification)
+        self.alpha_als = alpha_als
         self.rank = rank
         self.iterations = iterations
         self.init_mean = init_mean
@@ -28,13 +29,13 @@ class ALS1(BaselineRegression):
     
     def _fit_ALS_u2m(self):
         self.params_m = np.array([sparse.linalg.lsmr(self.params_u[self.X_u2m[self.ind_u2m[i]:self.ind_u2m[i+1], 0]], \
-                                                     self.y_u2m[self.ind_u2m[i]:self.ind_u2m[i+1]], damp=self.alpha)[0] \
+                                                     self.y_u2m[self.ind_u2m[i]:self.ind_u2m[i+1]], damp=self.alpha_als)[0] \
                                   for i in range(self.n_m)])
         return self
     
     def _fit_ALS_m2u(self):
         self.params_u = np.array([sparse.linalg.lsmr(self.params_m[self.X_m2u[self.ind_m2u[i]:self.ind_m2u[i+1], 1]], \
-                                                     self.y_m2u[self.ind_m2u[i]:self.ind_m2u[i+1]], damp=self.alpha)[0] \
+                                                     self.y_m2u[self.ind_m2u[i]:self.ind_m2u[i+1]], damp=self.alpha_als)[0] \
                                   for i in range(self.n_u)])
         return self
         
@@ -59,10 +60,11 @@ class ALS1(BaselineRegression):
     
     def fit(self, X, y):
         t0 = time.time()
-        X = self._fit_transform_id2index(X)
-        y_base = self._fit_baseline_regression(X, y)._predict_no_missing(X)
-        self._fit_ALS(X, y-y_base)
+        _X = self._fit_transform_id2index(X)
+        y_base = self._fit_baseline_regression(_X, y)._predict_no_missing(_X)
+        self._fit_ALS(_X, y-y_base)
         self.fitted = True
+        self.train_r2 = self.score(X, y)
         self.time_fitting.append(time.time() - t0)
         return self
     
@@ -78,10 +80,11 @@ class ALS1(BaselineRegression):
         return y
 		
 class ALS2(BaselineRegression):
-	# updating biases in each iteration
-    def __init__(self, alpha=1, rank=100, iterations=10, init_mean=0, init_std=0.1, \
+    # updating biases in each iteration
+    def __init__(self, alpha=2, alpha_als=2, rank=100, iterations=10, init_mean=0, init_std=0.1, \
                  random_state=0, classification=False):
         super().__init__(alpha, classification)
+        self.alpha_als = alpha_als
         self.rank = rank
         self.iterations = iterations
         self.init_mean = init_mean
@@ -94,7 +97,7 @@ class ALS2(BaselineRegression):
                                                                 self.params_u\
                                                                 [self.X_u2m[self.ind_u2m[i]:self.ind_u2m[i+1], 0]]), axis=1), \
                                                 y_u2m[self.ind_u2m[i]:self.ind_u2m[i+1]], \
-                                                damp=self.alpha)[0] for i in range(self.n_m)])
+                                                damp=self.alpha_als)[0] for i in range(self.n_m)])
         self.params_base[1+self.n_u:] = params_m[:, 0]
         self.params_m = params_m[:, 1:]
         return self
@@ -105,7 +108,7 @@ class ALS2(BaselineRegression):
                                                                 self.params_m\
                                                                 [self.X_m2u[self.ind_m2u[i]:self.ind_m2u[i+1], 1]]), axis=1), \
                                                 y_m2u[self.ind_m2u[i]:self.ind_m2u[i+1]], \
-                                                damp=self.alpha)[0] for i in range(self.n_u)])
+                                                damp=self.alpha_als)[0] for i in range(self.n_u)])
         self.params_base[1:1+self.n_u] = params_u[:, 0]
         self.params_u = params_u[:, 1:]
         return self
@@ -131,10 +134,11 @@ class ALS2(BaselineRegression):
     
     def fit(self, X, y):
         t0 = time.time()
-        X = self._fit_transform_id2index(X)
-        self._fit_baseline_regression(X, y)
-        self._fit_ALS(X, y-self.params_base[0])
+        _X = self._fit_transform_id2index(X)
+        self._fit_baseline_regression(_X, y)
+        self._fit_ALS(_X, y-self.params_base[0])
         self.fitted = True
+        self.train_r2 = self.score(X, y)
         self.time_fitting.append(time.time() - t0)
         return self
     

@@ -26,6 +26,7 @@ class RS_surprise(BaselineRegression):
         self.classification = classification
         self.time_fitting = []
         self.time_predict = []
+        self.train_r2 = None
         
     def fit(self, X, y):
         t0 = time.time()
@@ -34,6 +35,7 @@ class RS_surprise(BaselineRegression):
         data = d.build_full_trainset()
         self.estimator.train(data)
         self.fitted = True
+        self.train_r2 = self.score(X, y)
         self.time_fitting.append(time.time() - t0)
         return self
     
