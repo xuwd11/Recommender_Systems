@@ -19,7 +19,7 @@ class BaselineMean(BaseEstimator):
         self.classification = classification
         self.time_fitting = []
         self.time_predict = []
-        self.train_r2 = None
+        self.cv_r2 = None
     
     def _fit_id2index(self, X):
         self._user_id_array = np.unique(X[:, 0])
@@ -51,10 +51,9 @@ class BaselineMean(BaseEstimator):
     
     def fit(self, X, y):
         t0 = time.time()
-        _X = self._fit_transform_id2index(X)
-        self._fit_baseline_mean(_X, y)
+        X = self._fit_transform_id2index(X)
+        self._fit_baseline_mean(X, y)
         self.fitted = True
-        self.train_r2 = self.score(X, y)
         self.time_fitting.append(time.time() - t0)
         return self
     
@@ -162,10 +161,9 @@ class BaselineRegression(BaselineMean):
     
     def fit(self, X, y):
         t0 = time.time()
-        _X = self._fit_transform_id2index(X)
-        self._fit_baseline_regression(_X, y)
+        X = self._fit_transform_id2index(X)
+        self._fit_baseline_regression(X, y)
         self.fitted = True
-        self.train_r2 = self.score(X, y)
         self.time_fitting.append(time.time() - t0)
         return self
     

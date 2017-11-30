@@ -60,11 +60,10 @@ class ALS1(BaselineRegression):
     
     def fit(self, X, y):
         t0 = time.time()
-        _X = self._fit_transform_id2index(X)
-        y_base = self._fit_baseline_regression(_X, y)._predict_no_missing(_X)
-        self._fit_ALS(_X, y-y_base)
+        X = self._fit_transform_id2index(X)
+        y_base = self._fit_baseline_regression(X, y)._predict_no_missing(X)
+        self._fit_ALS(X, y-y_base)
         self.fitted = True
-        self.train_r2 = self.score(X, y)
         self.time_fitting.append(time.time() - t0)
         return self
     
@@ -134,11 +133,10 @@ class ALS2(BaselineRegression):
     
     def fit(self, X, y):
         t0 = time.time()
-        _X = self._fit_transform_id2index(X)
-        self._fit_baseline_regression(_X, y)
-        self._fit_ALS(_X, y-self.params_base[0])
+        X = self._fit_transform_id2index(X)
+        self._fit_baseline_regression(X, y)
+        self._fit_ALS(X, y-self.params_base[0])
         self.fitted = True
-        self.train_r2 = self.score(X, y)
         self.time_fitting.append(time.time() - t0)
         return self
     

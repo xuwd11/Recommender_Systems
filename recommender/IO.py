@@ -6,8 +6,7 @@ class IO:
         
     def to_pickle(self, obj):
         with open(self.file_name, 'wb') as output:
-            pickle.dump(obj, output)
-        return self
+            pickle.dump(obj, output, protocol=pickle.HIGHEST_PROTOCOL)
     
     def read_pickle(self):
         with open(self.file_name, 'rb') as input_:

@@ -43,8 +43,10 @@ def print_results(es, model_name, X_train, y_train, X_test, y_test, \
                   classification=True, plot=True, figname=None):
     print(model_name)
     print('Fitting time: {} s.'.format(es.time_fitting[-1]))
-    print('RMSE on training set: {}.'.format(es.score(X_train, y_train, scoring='rmse')))
-    print('RMSE on test set: {}.'.format(es.score(X_test, y_test, scoring='rmse')))
+    train_rmse = es.score(X_train, y_train, scoring='rmse')
+    print('RMSE on training set: {}.'.format(train_rmse))
+    test_rmse = es.score(X_test, y_test, scoring='rmse')
+    print('RMSE on test set: {}.'.format(test_rmse))
     print('r2 on training set: {}.'.format(es.score(X_train, y_train)))
     print('r2 on test set: {}.'.format(es.score(X_test, y_test)))
     if classification:
@@ -55,9 +57,11 @@ def print_results(es, model_name, X_train, y_train, X_test, y_test, \
             y_pred_test_label = es.predict(X_test, classification=True)
             plt.figure(figsize=(15, 5.5))
             plt.subplot(1, 2, 1)
-            plot_cm(confusion_matrix(y_train, y_pred_train_label), model_name + '\n(on training set)')
+            plot_cm(confusion_matrix(y_train, y_pred_train_label), \
+            model_name + '\n(RMSE on training set: {:.4f})'.format(train_rmse))
             plt.subplot(1, 2, 2)
-            plot_cm(confusion_matrix(y_test, y_pred_test_label), model_name + '\n(on test set)')
+            plot_cm(confusion_matrix(y_test, y_pred_test_label), \
+            model_name + '\n(RMSE on test set: {:.4f})'.format(test_rmse))
             if figname is not None:
                 plt.savefig(figname, bbox_inches='tight');
             plt.show();
