@@ -1,3 +1,7 @@
+_site
+.sass-cache
+.jekyll-metadata
+
 # COPIED FROM GITHUB PYTHON.GITIGNORE
 
 # Byte-compiled / optimized / DLL files
