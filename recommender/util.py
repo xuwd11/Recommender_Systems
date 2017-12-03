@@ -79,6 +79,7 @@ def get_results(es, X_train, y_train, X_test, y_test, X_cv=None, y_cv=None, save
     if save2 is not None:
         IO(save2).to_pickle(results)
     return results
+    
 def show_results(es, model_name, X_train, y_train, X_test, y_test, results=None, \
                   print_=True, plot=True, figname=None):
     display(Markdown('### {}'.format(model_name)))
