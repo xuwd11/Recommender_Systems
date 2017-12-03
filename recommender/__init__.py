@@ -1,4 +1,4 @@
-from .plot import plot_cm, print_results
+from .util import plot_cm, get_results, show_results
 from .IO import IO
 from .ModeClassifier import ModeClassifier
 from .Baseline import BaselineMean, BaselineRegression
