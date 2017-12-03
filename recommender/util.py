@@ -81,21 +81,31 @@ def get_results(es, X_train, y_train, X_test, y_test, X_cv=None, y_cv=None, save
     return results
     
 def show_results(es, model_name, X_train, y_train, X_test, y_test, results=None, \
-                  print_=True, plot=True, figname=None):
+                  print_=True, plot=True, show_cv=True, figname=None):
     display(Markdown('### {}'.format(model_name)))
     if results is None:
         results = get_results(es, X_train, y_train, X_test, y_test)
     y_preds, scores, time_fitting = results
     if print_:
-        display(Markdown('''Fitting time: {:.4f} s.  
-        RMSE on training set: {:.4f}.  
-        RMSE on test set: {:.4f}.  
-        $R^2$ on training set: {:.4f}.  
-        $R^2$ on cross-validation set: {:.4f}.  
-        $R^2$ on test set: {:.4f}.  
-        Classification accuracy on training set: {:.4f}.  
-        Classification accuracy on test set: {:.4f}.
-        '''.format(time_fitting, scores[0], scores[1], scores[2], es.cv_r2, scores[3], scores[4], scores[5])))
+        if show_cv:
+            display(Markdown('''Fitting time: {:.4f} s.  
+            RMSE on training set: {:.4f}.  
+            RMSE on test set: {:.4f}.  
+            $R^2$ on training set: {:.4f}.  
+            $R^2$ on cross-validation set: {:.4f}.  
+            $R^2$ on test set: {:.4f}.  
+            Classification accuracy on training set: {:.4f}.  
+            Classification accuracy on test set: {:.4f}.
+            '''.format(time_fitting, scores[0], scores[1], scores[2], es.cv_r2, scores[3], scores[4], scores[5])))
+        else:
+            display(Markdown('''Fitting time: {:.4f} s.  
+            RMSE on training set: {:.4f}.  
+            RMSE on test set: {:.4f}.  
+            $R^2$ on training set: {:.4f}.   
+            $R^2$ on test set: {:.4f}.  
+            Classification accuracy on training set: {:.4f}.  
+            Classification accuracy on test set: {:.4f}.
+            '''.format(time_fitting, scores[0], scores[1], scores[2], scores[3], scores[4], scores[5])))
     if plot:
         plt.figure(figsize=(15, 5.5))
         plt.subplot(1, 2, 1)
