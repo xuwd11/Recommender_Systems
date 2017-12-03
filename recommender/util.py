@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 import numpy as np
 import pandas as pd
+from IPython.display import display, HTML, Markdown
 
 from .IO import IO
 
@@ -74,27 +75,26 @@ def get_results(es, X_train, y_train, X_test, y_test, X_cv=None, y_cv=None, save
     if X_cv is not None:
         s_cv = get_single_result(es, X_cv, y_cv)
         y_preds.append(s_cv[0])
-    results = [y_preds, scores]
+    results = [y_preds, scores, es.time_fitting[-1]]
     if save2 is not None:
         IO(save2).to_pickle(results)
     return results
-        
 def show_results(es, model_name, X_train, y_train, X_test, y_test, results=None, \
                   print_=True, plot=True, figname=None):
-    print(model_name)
+    display(Markdown('### {}'.format(model_name)))
     if results is None:
         results = get_results(es, X_train, y_train, X_test, y_test)
-    y_preds, scores = results
+    y_preds, scores, time_fitting = results
     if print_:
-        print('Fitting time: {} s.'.format(es.time_fitting[-1]))
-        print('RMSE on training set: {}.'.format(scores[0]))
-        print('RMSE on test set: {}.'.format(scores[1]))
-        print('r2 on training set: {}.'.format(scores[2]))
-        if es.cv_r2 is not None:
-            print('r2 on cross-validation set: {}.'.format(es.cv_r2))
-        print('r2 on test set: {}.'.format(scores[3]))
-        print('Classification accuracy on training set: {}.'.format(scores[4]))
-        print('Classification accuracy on test set: {}.'.format(scores[5]))
+        display(Markdown('''Fitting time: {:.4f} s.  
+        RMSE on training set: {:.4f}.  
+        RMSE on test set: {:.4f}.  
+        $R^2$ on training set: {:.4f}.  
+        $R^2$ on cross-validation set: {:.4f}.  
+        $R^2$ on test set: {:.4f}.  
+        Classification accuracy on training set: {:.4f}.  
+        Classification accuracy on test set: {:.4f}.
+        '''.format(time_fitting, scores[0], scores[1], scores[2], es.cv_r2, scores[3], scores[4], scores[5])))
     if plot:
         plt.figure(figsize=(15, 5.5))
         plt.subplot(1, 2, 1)
@@ -107,3 +107,14 @@ def show_results(es, model_name, X_train, y_train, X_test, y_test, results=None,
             plt.savefig(figname, bbox_inches='tight');
         plt.show();
     print()
+
+def show_summaries(model_names, results, is_successful):
+    recs = []
+    cols = ['model', 'fitting time (s)', 'train RMSE', 'test RMSE', 'train $R^2$', 'test $R^2$']
+    for i in range(len(is_successful)):
+        if is_successful[i]:
+            recs.append([model_names[i]] + [results[i][2]] + results[i][1][:4])
+    df = pd.DataFrame.from_records(recs, columns=cols)
+    pd.set_option('precision', 4)
+    display(HTML(df.to_html(index=False)))
+    return df
