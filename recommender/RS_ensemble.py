@@ -11,6 +11,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 
+from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Ridge, RidgeCV
 
 from .Baseline import BaselineMean, BaselineRegression
