@@ -81,8 +81,9 @@ def get_results(es, X_train, y_train, X_test, y_test, X_cv=None, y_cv=None, save
     return results
     
 def show_results(es, model_name, X_train, y_train, X_test, y_test, results=None, \
-                  print_=True, plot=True, show_cv=True, figname=None):
-    display(Markdown('### {}'.format(model_name)))
+                  print_=True, plot=True, show_cv=True, show_title=True, figname=None):
+    if show_title:
+        display(Markdown('### {}'.format(model_name)))
     if results is None:
         results = get_results(es, X_train, y_train, X_test, y_test)
     y_preds, scores, time_fitting = results
@@ -113,7 +114,7 @@ def show_results(es, model_name, X_train, y_train, X_test, y_test, results=None,
         model_name + '\n(RMSE on training set: {:.4f})'.format(scores[0]))
         plt.subplot(1, 2, 2)
         plot_cm(confusion_matrix(y_test, y_preds[1][1]), \
-        model_name + '\n(RMSE on training set: {:.4f})'.format(scores[1]))
+        model_name + '\n(RMSE on test set: {:.4f})'.format(scores[1]))
         if figname is not None:
             plt.savefig(figname, bbox_inches='tight');
         plt.show();
@@ -129,3 +130,25 @@ def show_summaries(model_names, results, is_successful):
     pd.set_option('precision', 4)
     display(HTML(df.to_html(index=False)))
     return df
+    
+def get_base_predictions(results, is_successful, datanames, thres=0):
+    ys_base_train = []
+    ys_base_test = []
+    ys_base_cv = []
+    weights = []
+    for i in range(len(is_successful)):
+        if not is_successful[i]:
+            continue
+        model = IO(datanames[i]).read_pickle()
+        if model.cv_r2 <= thres:
+            continue
+        weights.append(model.cv_r2)
+        del model
+        ys_base_train.append(results[i][0][0][0])
+        ys_base_test.append(results[i][0][1][0])
+        ys_base_cv.append(results[i][0][2][0])
+    ys_base_train = np.array(ys_base_train).transpose()
+    ys_base_test = np.array(ys_base_test).transpose()
+    ys_base_cv = np.array(ys_base_cv).transpose()
+    weights = np.array(weights) / np.sum(weights)
+    return ys_base_train, ys_base_test, ys_base_cv, weights
