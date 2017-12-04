@@ -16,7 +16,7 @@ from sklearn.linear_model import Ridge, RidgeCV, LogisticRegression, LogisticReg
 
 from .Baseline import BaselineMean, BaselineRegression
 
-def get_X(X, dfb, dfu):
+def get_X(X, dfb, dfu, return_columns=False):
     df_ubr = pd.merge(pd.merge(pd.DataFrame(X, columns=['user_id', 'business_id']), \
                                dfu, how='left', on='user_id'), \
                       dfb, how='left', on='business_id')
@@ -77,7 +77,10 @@ def get_X(X, dfb, dfu):
     df_all['useful'] = df_ubr['useful'].apply(lambda x: x)
     df_all['funny'] = df_ubr['funny'].apply(lambda x: x)
     df_all['cool'] = df_ubr['cool'].apply(lambda x: x)
-    return df_all.values
+    if not return_columns:
+        return df_all.values
+    else:
+        return df_all.values, df_all.columns.values
     
 class RS_sklearn(BaselineRegression):
     def __init__(self, estimator=None, classification=False):
