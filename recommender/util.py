@@ -131,24 +131,3 @@ def show_summaries(model_names, results, is_successful):
     display(HTML(df.to_html(index=False)))
     return df
     
-def get_base_predictions(results, is_successful, datanames, thres=0):
-    ys_base_train = []
-    ys_base_test = []
-    ys_base_cv = []
-    weights = []
-    for i in range(len(is_successful)):
-        if not is_successful[i]:
-            continue
-        model = IO(datanames[i]).read_pickle()
-        if model.cv_r2 <= thres:
-            continue
-        weights.append(model.cv_r2)
-        del model
-        ys_base_train.append(results[i][0][0][0])
-        ys_base_test.append(results[i][0][1][0])
-        ys_base_cv.append(results[i][0][2][0])
-    ys_base_train = np.array(ys_base_train).transpose()
-    ys_base_test = np.array(ys_base_test).transpose()
-    ys_base_cv = np.array(ys_base_cv).transpose()
-    weights = np.array(weights) / np.sum(weights)
-    return ys_base_train, ys_base_test, ys_base_cv, weights
