@@ -60,10 +60,8 @@ def get_multi_base_predictions(results, is_successful, datanames, thres=0):
     return ys_base_train, ys_base_test, ys_base_cv, weights
 
 class RS_ensemble(BaselineRegression):
-    def __init__(self, algorithm='avg', classification=False):
-        if not algorithm in ['avg', 'ridge']:
-            raise NotImplementedError('Algorithm not implemented.')
-        self.algorithm = algorithm
+    def __init__(self, estimator=None, classification=False):
+        self.estimator = estimator
         self.fitted = False
         self.classification = classification
         self.time_fitting = []
@@ -74,22 +72,22 @@ class RS_ensemble(BaselineRegression):
         self.weights = weights
         return self
     
-    def _fit_ridge(self, ys_base, y):
-        self.estimator = RidgeCV().fit(ys_base, y)
+    def _fit_estimator(self, ys_base, y):
+        self.estimator.fit(ys_base, y)
         return self
     
     def fit(self, ys_base=None, y=None, weights=None):
         t0 = time.time()
-        if self.algorithm == 'avg':
+        if self.estimator is None:
             self._fit_avg(weights)
-        elif self.algorithm == 'ridge':
-            self._fit_ridge(ys_base, y)
+        else:
+            self._fit_estimator(ys_base, y)
         self.fitted = True
         self.time_fitting.append(time.time() - t0)
         return self
     
     def _predict_regression(self, ys_base):
-        if self.algorithm == 'avg':
+        if self.estimator is None:
             return ys_base.dot(self.weights)
-        elif self.algorithm == 'ridge':
+        else:
             return self.estimator.predict(ys_base)
