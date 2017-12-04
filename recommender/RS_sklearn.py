@@ -25,70 +25,68 @@ def get_X(X, dfb, dfu, return_columns=False):
                                dfu, how='left', on='user_id'), \
                       dfb, how='left', on='business_id')
     
-    col_dummy = ['attributes.Alcohol', 'attributes.AgesAllowed', 'attributes.NoiseLevel', \
-             'attributes.WiFi', 'attributes.Smoking', 'attributes.RestaurantsAttire']
-    
-    col_boolean = ['attributes.RestaurantsDelivery', 'attributes.DogsAllowed', 'attributes.BYOB', \
-              'attributes.RestaurantsTableService', 'attributes.RestaurantsCounterService', \
-              'attributes.Corkage', 'attributes.BusinessAcceptsBitcoin', 'attributes.WheelchairAccessible', \
-              'attributes.BusinessAcceptsCreditCards', 'attributes.BusinessParking.lot', 'attributes.DriveThru', \
-              'attributes.HasTV', 'attributes.BusinessParking.street', 'attributes.AcceptsInsurance', \
-              'attributes.BusinessParking.valet', 'attributes.BYOBCorkage', 'attributes.BusinessParking.garage', \
-              'attributes.ByAppointmentOnly', 'attributes.Caters', 'attributes.RestaurantsReservations', \
-              'attributes.RestaurantsTakeOut', 'attributes.BikeParking', 'attributes.OutdoorSeating',\
-              'attributes.BusinessParking.validated']
-    
-    df_ubr = df_ubr.fillna(0)
-    
-    col_drop = ['user_id', 'business_id', 'postal_code', 'latitude', 'categories', 'name_x', \
-'neighborhood', 'review_count_x', 'state', 'address', 'hours.Sunday', 'hours.Monday','hours.Tuesday','hours.Wednesday','hours.Thursday','hours.Friday','hours.Saturday',\
-'longitude', 'elite', 'friends', 'name_y', 'city']
+    df_all = pd.DataFrame()
+    df_all['lasting'] = df_ubr['yelping_since'].apply(lambda x: int(x[0:4]) - 2005)
+    df_all['stars'] = df_ubr['stars'].apply(lambda x: x)
+    df_all['ambience_divey'] = df_ubr['attributes.Ambience.divey'].apply(lambda x: 1 if x == True else 0)
+    df_all['ambience_casual'] = df_ubr['attributes.Ambience.casual'].apply(lambda x: 1 if x == True else 0)
+    df_all['ambience_classy'] = df_ubr['attributes.Ambience.classy'].apply(lambda x: 1 if x == True else 0)
+    df_all['ambience_hipster'] = df_ubr['attributes.Ambience.hipster'].apply(lambda x: 1 if x == True else 0)
+    df_all['ambience_intimate'] = df_ubr['attributes.Ambience.intimate'].apply(lambda x: 1 if x == True else 0)
+    df_all['ambience_romantic'] = df_ubr['attributes.Ambience.romantic'].apply(lambda x: 1 if x == True else 0)
+    df_all['ambience_touristy'] = df_ubr['attributes.Ambience.touristy'].apply(lambda x: 1 if x == True else 0)
+    df_all['ambience_trendy'] = df_ubr['attributes.Ambience.trendy'].apply(lambda x: 1 if x == True else 0)
+    df_all['ambience_upscale'] = df_ubr['attributes.Ambience.upscale'].apply(lambda x: 1 if x == True else 0)
+    df_all['bestnight_5'] = df_ubr['attributes.BestNights.friday'].apply(lambda x: 1 if x == True else 0)
+    df_all['bestnight_1'] = df_ubr['attributes.BestNights.monday'].apply(lambda x: 1 if x == True else 0)
+    df_all['bestnight_4'] = df_ubr['attributes.BestNights.thursday'].apply(lambda x: 1 if x == True else 0)
+    df_all['bestnight_2'] = df_ubr['attributes.BestNights.tuesday'].apply(lambda x: 1 if x == True else 0)
+    df_all['bestnight_3'] = df_ubr['attributes.BestNights.wednesday'].apply(lambda x: 1 if x == True else 0)
+    df_all['bestnight_6'] = df_ubr['attributes.BestNights.saturday'].apply(lambda x: 1 if x == True else 0)
+    df_all['bestnight_7'] = df_ubr['attributes.BestNights.sunday'].apply(lambda x: 1 if x == True else 0)
+    df_all['diary-free'] = df_ubr['attributes.DietaryRestrictions.dairy-free'].apply(lambda x: 1 if x == True else 0)
+    df_all['halal'] = df_ubr['attributes.DietaryRestrictions.halal'].apply(lambda x: 1 if x == True else 0)
+    df_all['kosher'] = df_ubr['attributes.DietaryRestrictions.kosher'].apply(lambda x: 1 if x == True else 0)
+    df_all['soy-free'] = df_ubr['attributes.DietaryRestrictions.soy-free'].apply(lambda x: 1 if x == True else 0)
+    df_all['vegan'] = df_ubr['attributes.DietaryRestrictions.vegan'].apply(lambda x: 1 if x == True else 0)
+    df_all['vegetarian'] = df_ubr['attributes.DietaryRestrictions.vegetarian'].apply(lambda x: 1 if x == True else 0)
+    df_all['good_dance'] = df_ubr['attributes.GoodForDancing'].apply(lambda x: 1 if x == True else 0)
+    df_all['good_kids'] = df_ubr['attributes.GoodForKids'].apply(lambda x: 1 if x == True else 0)
+    df_all['good_lunch'] = df_ubr['attributes.GoodForMeal.lunch'].apply(lambda x: 1 if x == True else 0)
+    df_all['good_brunch'] = df_ubr['attributes.GoodForMeal.brunch'].apply(lambda x: 1 if x == True else 0)
+    df_all['good_dinner'] = df_ubr['attributes.GoodForMeal.dinner'].apply(lambda x: 1 if x == True else 0)
+    df_all['good_latenight'] = df_ubr['attributes.GoodForMeal.latenight'].apply(lambda x: 1 if x == True else 0)
+    df_all['good_group'] = df_ubr['attributes.RestaurantsGoodForGroups'].apply(lambda x: 1 if x == True else 0)
+    df_all['background'] = df_ubr['attributes.Music.background_music'].apply(lambda x: 1 if x == True else 0)
+    df_all['dj'] = df_ubr['attributes.Music.dj'].apply(lambda x: 1 if x == True else 0)
+    df_all['jukebox'] = df_ubr['attributes.Music.jukebox'].apply(lambda x: 1 if x == True else 0)
+    df_all['karaoke'] = df_ubr['attributes.Music.karaoke'].apply(lambda x: 1 if x == True else 0)
+    df_all['live'] = df_ubr['attributes.Music.live'].apply(lambda x: 1 if x == True else 0)
+    df_all['video'] = df_ubr['attributes.Music.video'].apply(lambda x: 1 if x == True else 0)
 
-    df_ubr = df_ubr.drop(col_drop, 1)
-    df_ubr = pd.get_dummies(df_ubr, columns=col_dummy, drop_first=True)
-    alter_boolean(df_ubr, col_boolean)
-    df_ubr['yelping_since'] = df_ubr['yelping_since'].apply(lambda x: int(x[0:4]) - 2005.0)
-    df_ubr['stars'] = df_ubr['stars'].apply(lambda x: x)
-    df_ubr['attributes.Ambience.divey'] = df_ubr['attributes.Ambience.divey'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Ambience.casual'] = df_ubr['attributes.Ambience.casual'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Ambience.classy'] = df_ubr['attributes.Ambience.classy'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Ambience.hipster'] = df_ubr['attributes.Ambience.hipster'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Ambience.intimate'] = df_ubr['attributes.Ambience.intimate'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Ambience.romantic'] = df_ubr['attributes.Ambience.romantic'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Ambience.touristy'] = df_ubr['attributes.Ambience.touristy'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Ambience.trendy'] = df_ubr['attributes.Ambience.trendy'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Ambience.upscale'] = df_ubr['attributes.Ambience.upscale'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.BestNights.friday'] = df_ubr['attributes.BestNights.friday'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.BestNights.monday'] = df_ubr['attributes.BestNights.monday'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.BestNights.thursday'] = df_ubr['attributes.BestNights.thursday'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.BestNights.tuesday'] = df_ubr['attributes.BestNights.tuesday'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.BestNights.wednesday'] = df_ubr['attributes.BestNights.wednesday'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.BestNights.saturday'] = df_ubr['attributes.BestNights.saturday'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.BestNights.sunday'] = df_ubr['attributes.BestNights.sunday'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.DietaryRestrictions.dairy-free'] = df_ubr['attributes.DietaryRestrictions.dairy-free'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.DietaryRestrictions.halal'] = df_ubr['attributes.DietaryRestrictions.halal'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.DietaryRestrictions.kosher'] = df_ubr['attributes.DietaryRestrictions.kosher'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.DietaryRestrictions.soy-free'] = df_ubr['attributes.DietaryRestrictions.soy-free'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.DietaryRestrictions.vegan'] = df_ubr['attributes.DietaryRestrictions.vegan'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.DietaryRestrictions.vegetarian'] = df_ubr['attributes.DietaryRestrictions.vegetarian'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.GoodForDancing'] = df_ubr['attributes.GoodForDancing'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.GoodForKids'] = df_ubr['attributes.GoodForKids'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.GoodForMeal.lunch'] = df_ubr['attributes.GoodForMeal.lunch'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.GoodForMeal.brunch'] = df_ubr['attributes.GoodForMeal.brunch'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.GoodForMeal.dinner'] = df_ubr['attributes.GoodForMeal.dinner'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.GoodForMeal.latenight'] = df_ubr['attributes.GoodForMeal.latenight'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.RestaurantsGoodForGroups'] = df_ubr['attributes.RestaurantsGoodForGroups'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Music.background_music'] = df_ubr['attributes.Music.background_music'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Music.dj'] = df_ubr['attributes.Music.dj'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Music.jukebox'] = df_ubr['attributes.Music.jukebox'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Music.karaoke'] = df_ubr['attributes.Music.karaoke'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Music.live'] = df_ubr['attributes.Music.live'].apply(lambda x: 1 if x == True else 0)
-    df_ubr['attributes.Music.video'] = df_ubr['attributes.Music.video'].apply(lambda x: 1 if x == True else 0)
+    df_all['accept_insurance'] = df_ubr['attributes.AcceptsInsurance'].apply(lambda x: 1 if x == True else 0)
+    df_all['drivu_thri'] = df_ubr['attributes.DriveThru'].apply(lambda x: 1 if x == True else 0)
+    df_all['bike_parking'] = df_ubr['attributes.BikeParking'].apply(lambda x: 1 if x == pd.isnull(x) else 0)
+
+    df_all['age_alloed'] = df_ubr['attributes.AgesAllowed'].apply(lambda x: 2 if x == '18plus' else x)
+    df_all['age_alloed'] = df_ubr['attributes.AgesAllowed'].apply(lambda x: 2 if x == '19plus' else x)
+    df_all['age_alloed'] = df_ubr['attributes.AgesAllowed'].apply(lambda x: 1 if x == '21plus' else x)
+    df_all['age_alloed'] = df_ubr['attributes.AgesAllowed'].apply(lambda x: 1 if x == 'allages' else 0)
+    df_all['wifi'] = df_ubr['attributes.WiFi'].apply(lambda x: 1 if x == 'paid' else 0)
+    df_all['attire'] = df_ubr['attributes.RestaurantsAttire'].apply(lambda x: 1 if x == 'formal' else 0)
+    df_all['noise'] = df_ubr['attributes.NoiseLevel'].apply(lambda x: 1 if x == 'very_loud' else 0)
+
+    df_all['fans'] = df_ubr['fans'].apply(lambda x: x)
+    df_all['review_count'] = df_ubr['review_count_y'].apply(lambda x: x)
+    df_all['average_stars'] = df_ubr['average_stars'].apply(lambda x: x)
+    df_all['useful'] = df_ubr['useful'].apply(lambda x: x)
+    df_all['funny'] = df_ubr['funny'].apply(lambda x: x)
+    df_all['cool'] = df_ubr['cool'].apply(lambda x: x)
 
     if not return_columns:
-        return df_ubr.values
+        return df_all.values
     else:
-        return df_ubr.values, df_ubr.columns.values
+        return df_all.values, df_all.columns.values
     
 class RS_sklearn(BaselineRegression):
     def __init__(self, estimator=None, classification=False):
