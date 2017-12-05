@@ -120,9 +120,9 @@ def show_results(es, model_name, X_train, y_train, X_test, y_test, results=None,
         plt.show();
     print()
 
-def show_summaries(model_names, results, is_successful):
+def show_summaries(model_names, results, is_successful, title='model'):
     recs = []
-    cols = ['model', 'fitting time (s)', 'train RMSE', 'test RMSE', 'train $R^2$', 'test $R^2$']
+    cols = ['{}'.format(title), 'fitting time (s)', 'train RMSE', 'test RMSE', 'train $R^2$', 'test $R^2$']
     for i in range(len(is_successful)):
         if is_successful[i]:
             recs.append([model_names[i]] + [results[i][2]] + results[i][1][:4])
