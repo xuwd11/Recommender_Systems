@@ -75,6 +75,7 @@ def get_X(X, dfb, dfu, return_columns=False):
     df_all['wifi'] = df_ubr['attributes.WiFi'].apply(lambda x: 1 if x == 'paid' else 0)
     df_all['attire'] = df_ubr['attributes.RestaurantsAttire'].apply(lambda x: 1 if x == 'formal' else 0)
     df_all['noise'] = df_ubr['attributes.NoiseLevel'].apply(lambda x: 1 if x == 'very_loud' else 0)
+    df_all['price_range'] = df_ubr['attributes.RestaurantsPriceRange2'].apply(lambda x: 0 if pd.isnull(x) else 1)
 
     df_all['fans'] = df_ubr['fans'].apply(lambda x: x)
     df_all['review_count'] = df_ubr['review_count_y'].apply(lambda x: x)
