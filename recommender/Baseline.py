@@ -139,7 +139,7 @@ class BaselineMean(BaseEstimator):
             return accuracy_score(y, self.predict(X, classification))
 			
 class BaselineRegression(BaselineMean):
-    def __init__(self, alpha=1, classification=False):
+    def __init__(self, alpha=2, classification=False):
         super().__init__(classification)
         self.alpha = alpha
         

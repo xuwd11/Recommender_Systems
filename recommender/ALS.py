@@ -17,7 +17,7 @@ from .Baseline import BaselineMean, BaselineRegression
 
 class ALS1(BaselineRegression):
     # not updating biases in each iteration
-    def __init__(self, alpha=2, alpha_als=2, rank=100, iterations=10, init_mean=0, init_std=0.1, \
+    def __init__(self, alpha=2, alpha_als=2, rank=100, iterations=5, init_mean=0, init_std=0.1, \
                  random_state=0, classification=False):
         super().__init__(alpha, classification)
         self.alpha_als = alpha_als
@@ -80,7 +80,7 @@ class ALS1(BaselineRegression):
 		
 class ALS2(BaselineRegression):
     # updating biases in each iteration
-    def __init__(self, alpha=2, alpha_als=2, rank=100, iterations=10, init_mean=0, init_std=0.1, \
+    def __init__(self, alpha=2, alpha_als=2, rank=100, iterations=5, init_mean=0, init_std=0.1, \
                  random_state=0, classification=False):
         super().__init__(alpha, classification)
         self.alpha_als = alpha_als
