@@ -1,8 +1,10 @@
+
 ---
 title: Recommender systems, a celebration of collaborative filtering and content filtering
 ---
 
-<br>
+*Group 15 - Weidong Xu, Jiejun Lu*
+
 **Note:** You can view source codes for this project on [GitHub](https://github.com/xuwd11/Recommender_Systems), including the python package [`recommender`](https://github.com/xuwd11/Recommender_Systems/tree/master/recommender) we wrote for this project.
 <br>
 
@@ -55,12 +57,94 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
+```python
+import sys
+import traceback
+import pandas as pd
+import numpy as np
+import time
+from copy import deepcopy
+
+from sklearn.base import BaseEstimator
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+
+from sklearn.linear_model import Ridge, RidgeCV
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+
+from scipy import sparse
+
+import pickle
+
+from IPython.display import display, HTML, Markdown
+
+import matplotlib
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+pd.set_option('display.width', 15000)
+pd.set_option('display.max_columns', 100)
+sns.set_style("whitegrid", {'axes.grid' : False})
+sns.set_context('poster')
+%matplotlib inline
+
+from surprise import Dataset, Reader
+from surprise import NormalPredictor, BaselineOnly, SVD, SVDpp, NMF, \
+SlopeOne, CoClustering, KNNBasic, KNNWithMeans, KNNBaseline
+
+from recommender import plot_cm, get_results, show_results, IO, \
+show_summaries, get_base_predictions, get_multi_base_predictions
+from recommender import ModeClassifier, BaselineMean, BaselineRegression, ALS1, ALS2, RS_surprise, RS_ensemble
+```
 
 
 
 
+```python
+cities = ['Champaign', 'Cleveland', 'Pittsburgh', 'Toronto', 'Las_Vegas', 'Full']
 
+for city in cities:
+    data_dir = 'data/{}/'.format(city)
+    model_names = IO(data_dir + 'results/model_names.pkl').read_pickle()
+    results = IO(data_dir + 'results/results.pkl').read_pickle()
+    is_successful = IO(data_dir + 'results/is_successful.pkl').read_pickle()
+    sizes = IO(data_dir + 'sizes.pkl').read_pickle()
+    
+    display(Markdown('### {} <sup>({} reviews, {} restaurants, {} users)</sup>'.\
+                 format(city, sizes[0], sizes[1], sizes[2])))
+    # display(Markdown('**Collaborative filtering**'))
+    show_summaries(model_names, results, is_successful, title='Collaborative filtering')
+    display(Markdown('<sup>(* shows the algorithms we implemented by wrapping around \
+    methods in scikit-surprise python package)</sup>'))
+    
+    model_names = IO(data_dir + 'results05/model_names.pkl').read_pickle()
+    results = IO(data_dir + 'results05/results.pkl').read_pickle()
+    is_successful = IO(data_dir + 'results05/is_successful.pkl').read_pickle()
+    #sizes = IO(data_dir + 'sizes.pkl').read_pickle()
 
+    #display(Markdown('### {} <sup>({} reviews, {} restaurants, {} users)</sup>'.\
+                     #format(city, sizes[0], sizes[1], sizes[2])))
+    #display(Markdown('**Content filtering**'))
+    show_summaries(model_names, results, is_successful, title='Content filtering')
+    
+    model_names = IO(data_dir + 'results06/model_names.pkl').read_pickle()
+    results = IO(data_dir + 'results06/results.pkl').read_pickle()
+    is_successful = IO(data_dir + 'results06/is_successful.pkl').read_pickle()
+    #sizes = IO(data_dir + 'sizes.pkl').read_pickle()
+
+    #display(Markdown('### {} <sup>({} reviews, {} restaurants, {} users)</sup>'.\
+                     #format(city, sizes[0], sizes[1], sizes[2])))
+    #display(Markdown('**Ensemble estimators**'))
+    show_summaries(model_names, results, is_successful, title='Ensemble estimators')
+    display(Markdown('<sup>(Ensemble1 represents the ensemble of collaborative filtering models; \
+    Ensemble2 represents the ensemble of collaborative filtering and content filtering models)</sup>'))
+        
+    display(Markdown('''<br><br>'''))
+```
 
 
 
@@ -68,9 +152,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Collaborative filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -209,9 +293,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Content filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -242,9 +326,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Ensemble estimators</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -319,9 +403,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Collaborative filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -460,9 +544,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Content filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -493,9 +577,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Ensemble estimators</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -570,9 +654,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Collaborative filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -687,9 +771,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Content filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -720,9 +804,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Ensemble estimators</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -797,9 +881,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Collaborative filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -914,9 +998,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Content filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -947,9 +1031,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Ensemble estimators</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -1024,9 +1108,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Collaborative filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -1141,9 +1225,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Content filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -1174,9 +1258,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Ensemble estimators</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -1251,9 +1335,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Collaborative filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -1352,9 +1436,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Content filtering</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
@@ -1385,9 +1469,9 @@ Please see [Conclusions](08_conclusions.html) for conclusions and future work.
 
 
 
-<table  class="dataframe">
+<table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
+    <tr style="text-align: right;">
       <th>Ensemble estimators</th>
       <th>fitting time (s)</th>
       <th>train RMSE</th>
