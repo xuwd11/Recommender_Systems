@@ -51,6 +51,7 @@ Please see [EDA](03_EDA.html), [Collaborative Filtering](04_collaborative_filter
 Please see [Results](07_results.html) for detailed results including confusion matrix visualization (of rounded predictions) for each experiment we list below.
 
 Please see [Conclusions](08_conclusions.html) for conclusions and future work.
+<br><br>
 
 
 

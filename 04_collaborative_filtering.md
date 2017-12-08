@@ -528,7 +528,7 @@ We can determine the best parameters through cross-validation. And we can test t
     
 
 
-The result of **SVD-ALS2** is similar to that of **SVD-ALS1**, indicating updating biases in each iteration don't have much impact on the model performance.
+The result of **SVD-ALS2** is similar to that of **SVD-ALS1**, indicating updating biases in each iteration doesn't have much impact on the model performance.
 <br><br><br>
 
 ### SVD-SGD*
